@@ -34,6 +34,15 @@ def run_aihawk():
     except Exception as e:
         logger.error(f"Failed to launch AIHawk: {e}")
 
+def run_aihawk_sync():
+    while True:
+        try:
+            from src.dashboard.aihawk_sync import sync_aihawk_jobs
+            sync_aihawk_jobs("aihawk_core/Jobs_Applier_AI_Agent_AIHawk-main/job_applications")
+        except Exception as e:
+            logger.error(f"Sync error: {e}")
+        time.sleep(10)
+
 if __name__ == "__main__":
     # 1. Start dashboard in a background thread
     dashboard_thread = threading.Thread(target=run_dashboard, daemon=True)
@@ -45,7 +54,12 @@ if __name__ == "__main__":
     # 3. Discover external jobs via JobSpy
     run_jobspy_discovery()
     
-    # 4. Start AIHawk for LinkedIn auto-applying
+    # 4. Start AIHawk Sync thread
+    logger.info("Starting AIHawk Output Sync background thread...")
+    sync_thread = threading.Thread(target=run_aihawk_sync, daemon=True)
+    sync_thread.start()
+    
+    # 5. Start AIHawk for LinkedIn auto-applying
     logger.info("Starting AIHawk Engine...")
     run_aihawk()
     
