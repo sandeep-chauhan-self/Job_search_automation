@@ -24,18 +24,16 @@ def run_jobspy_discovery():
     return found
 
 def run_aihawk():
-    logger.info("Launching AIHawk Auto-Applier for LinkedIn...")
+    logger.info("Launching Auto-Applier Bot (Godsscion Core) for LinkedIn...")
     try:
-        # Launching the authentic AIHawk engine with the active Python runtime
+        # Launching the automated LinkedIn applier
         process = subprocess.Popen(
-            [sys.executable, "main.py"],
-            cwd="aihawk_core/Jobs_Applier_AI_Agent_AIHawk-main"
+            [sys.executable, "runAiBot.py"],
+            cwd="godsscion"
         )
         process.wait()
     except Exception as e:
-        logger.error(f"Failed to launch AIHawk: {e}")
-    except Exception as e:
-        logger.error(f"Failed to launch AIHawk: {e}")
+        logger.error(f"Failed to launch Bot: {e}")
 
 def run_aihawk_sync():
     while True:
