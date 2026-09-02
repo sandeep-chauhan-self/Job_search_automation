@@ -18,9 +18,17 @@ class DiscoveryEngine:
         searches = self.filters.get("searches", [])
         exclude_keywords = [k.lower() for k in self.filters.get("exclude_keywords", [])]
         
-        # Determine enabled platforms
+        # Determine enabled platforms mapped to JobSpy supported sites
         platforms_config = self.config.get("platforms", {})
-        enabled_platforms = [k for k, v in platforms_config.items() if v]
+        site_map = {
+            "linkedin": "linkedin",
+            "indeed": "indeed",
+            "glassdoor": "glassdoor",
+            "zip_recruiter": "zip_recruiter",
+            "google_jobs": "google",
+            "google": "google"
+        }
+        enabled_platforms = [site_map[k] for k, v in platforms_config.items() if v and k in site_map]
         if not enabled_platforms:
             return 0
             

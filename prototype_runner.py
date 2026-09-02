@@ -1,3 +1,4 @@
+import sys
 import subprocess
 import time
 import threading
@@ -25,12 +26,14 @@ def run_jobspy_discovery():
 def run_aihawk():
     logger.info("Launching AIHawk Auto-Applier for LinkedIn...")
     try:
-        # Launching the authentic AIHawk engine
+        # Launching the authentic AIHawk engine with the active Python runtime
         process = subprocess.Popen(
-            ["python", "main.py"],
+            [sys.executable, "main.py"],
             cwd="aihawk_core/Jobs_Applier_AI_Agent_AIHawk-main"
         )
         process.wait()
+    except Exception as e:
+        logger.error(f"Failed to launch AIHawk: {e}")
     except Exception as e:
         logger.error(f"Failed to launch AIHawk: {e}")
 
