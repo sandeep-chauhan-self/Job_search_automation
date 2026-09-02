@@ -52,12 +52,13 @@ if __name__ == "__main__":
     dashboard_thread.start()
     
     # 2. Give dashboard time to start
-    time.sleep(2)
+    time.sleep(1)
     
-    # 3. Discover external jobs via JobSpy
-    run_jobspy_discovery()
+    # 3. Discover external jobs via JobSpy in background
+    discovery_thread = threading.Thread(target=run_jobspy_discovery, daemon=True)
+    discovery_thread.start()
     
-    # 4. Start AIHawk Sync thread
+    # 4. Start AIHawk Sync thread in background
     logger.info("Starting AIHawk Output Sync background thread...")
     sync_thread = threading.Thread(target=run_aihawk_sync, daemon=True)
     sync_thread.start()
