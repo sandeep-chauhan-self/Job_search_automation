@@ -1,0 +1,26 @@
+# System configuration
+llm:
+  provider: "gpt-4o-mini"            # LiteLLM model string
+  temperature: 0.3
+  max_tokens: 2000
+  fallback_provider: "ollama/llama3.1"  # Used if primary fails
+
+application:
+  daily_limit: 25                     # Max auto-applies per day
+  min_match_score: 60                 # Jobs below this are SKIPPED
+  delay_min_seconds: 3                # Min delay between actions
+  delay_max_seconds: 8                # Max delay between actions
+  generate_cover_letter: true         # Master toggle
+  browser_viewport:
+    width: 1920
+    height: 1080
+
+platforms:
+  linkedin: true
+  indeed: true
+  glassdoor: true
+  naukri: true
+  google_jobs: true
+
+ghosting:
+  days_until_ghosted: 14              # Auto-mark as ghosted after N days

@@ -1,0 +1,42 @@
+personal:
+  name: "John Doe"
+  email: "john@example.com"
+  phone: "+91-9876543210"
+  location: "Bangalore, India"
+  linkedin_url: "https://linkedin.com/in/johndoe"
+  github_url: "https://github.com/johndoe"
+  portfolio_url: "https://johndoe.dev"
+
+summary: |
+  Software Engineer with 6+ years of experience in full-stack development,
+  specializing in Python, React, and cloud infrastructure. Led teams of 5-8 engineers
+  at two startups. Passionate about building developer tools and automation.
+
+experience:
+  - title: "Senior Software Engineer"
+    company: "TechCorp"
+    location: "Bangalore, India"
+    start_date: "2022-01"
+    end_date: "present"
+    bullets:
+      - "Led migration of monolithic API to microservices, reducing latency by 40%"
+      - "Built CI/CD pipeline serving 200+ deployments/week using GitHub Actions"
+      - "Mentored 3 junior developers through code reviews and pair programming"
+
+skills:
+  languages: ["Python", "JavaScript", "TypeScript", "Go"]
+  frameworks: ["React", "FastAPI", "Django", "Next.js"]
+  tools: ["Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis"]
+
+education:
+  - degree: "B.Tech Computer Science"
+    institution: "IIT Delhi"
+    year: 2019
+
+preferences:
+  target_roles: ["Senior Software Engineer", "Staff Engineer", "Tech Lead"]
+  target_locations: ["Bangalore", "Remote"]
+  work_mode: ["remote", "hybrid"]
+  min_salary: "25 LPA"
+  industries_preferred: ["SaaS", "Developer Tools", "Fintech"]
+  companies_blacklist: ["SpamCorp", "SketchyInc"]

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ name }} - Resume</title>
+    <link rel="stylesheet" href="resume_styles.css">
+</head>
+<body>
+
+    <h1>{{ name }}</h1>
+    
+    <div class="contact-info">
+        {{ email }} &nbsp;|&nbsp; {{ phone }} &nbsp;|&nbsp; {{ location }}<br>
+        {{ linkedin_url }} &nbsp;|&nbsp; {{ github_url }}
+        {% if portfolio_url %}&nbsp;|&nbsp; {{ portfolio_url }}{% endif %}
+    </div>
+
+    <h2>Professional Summary</h2>
+    <p>{{ summary }}</p>
+
+    <h2>Experience</h2>
+    {% for job in experience %}
+    <div class="experience-item">
+        <div class="item-header">
+            <div>
+                <span class="title">{{ job.title }}</span>, 
+                <span class="company">{{ job.company }}</span>
+            </div>
+            <div class="dates">{{ job.dates }}</div>
+        </div>
+        <ul>
+            {% for bullet in job.bullets %}
+            <li>{{ bullet }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+
+    <h2>Skills</h2>
+    {% for category, items in skills.items() %}
+    <div class="skills-row">
+        <span class="skills-category">{{ category | capitalize }}:</span>
+        <span class="skills-list">{{ items | join(", ") }}</span>
+    </div>
+    {% endfor %}
+
+    <h2>Education</h2>
+    {% for edu in education %}
+    <div class="education-item">
+        <div class="item-header">
+            <div>
+                <span class="title">{{ edu.degree }}</span>, 
+                <span class="company">{{ edu.institution }}</span>
+            </div>
+            <div class="dates">{{ edu.year }}</div>
+        </div>
+    </div>
+    {% endfor %}
+
+</body>
+</html>

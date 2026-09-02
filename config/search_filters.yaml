@@ -1,0 +1,15 @@
+searches:
+  - title: "Senior Software Engineer"
+    location: "Bangalore"
+    experience_level: "mid_senior"
+    work_mode: "remote"
+    date_posted: "week"
+    
+  - title: "Staff Engineer"
+    location: "India"
+    experience_level: "senior"
+    work_mode: "remote"
+    date_posted: "week"
+
+exclude_keywords: ["intern", "junior", "fresher", "unpaid"]
+include_keywords: ["python", "react"]

@@ -1,0 +1,19 @@
+- pattern: "years of experience"
+  answer: "6"
+  type: "number"
+
+- pattern: "authorized to work"
+  answer: "Yes"
+  type: "radio"
+
+- pattern: "visa sponsorship"
+  answer: "No"
+  type: "radio"
+
+- pattern: "salary"
+  answer: "2500000"
+  type: "number"
+
+- pattern: "notice period"
+  answer: "30 days"
+  type: "text"
