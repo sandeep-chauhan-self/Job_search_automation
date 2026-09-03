@@ -190,5 +190,25 @@ def test_funnel_is_cumulative_and_monotonic(client, test_db):
     assert funnel["SCORED"] == 1
     assert funnel["APPLIED"] == 1
 
-    counts = [funnel[s] for s in ["DISCOVERED", "SCORED", "APPROVED", "RESUME_READY", "APPLIED", "INTERVIEW", "OFFER"]]
+    counts = [funnel[s] for s in ["DISCOVERED", "SCORED", "SHORTLISTED", "RESUME_READY", "APPLIED", "INTERVIEW", "OFFER"]]
     assert counts == sorted(counts, reverse=True), f"funnel must never increase downstream: {counts}"
+
+
+def test_applied_counted_without_timestamp(client, test_db):
+    # Hand-imported rows carry the status but no applied_at; they must still count.
+    _seed(test_db, dedup_hash="noTs-1", status="APPLIED", applied_at=None)
+
+    data = client.get("/api/analytics/summary").json()
+    assert data["total_applied"] == 1
+
+
+def test_funnel_monotonic_when_shortlisted_without_score(client, test_db):
+    # Shortlisting by hand skips scoring entirely, which must not make an
+    # upstream stage smaller than a downstream one.
+    _seed(test_db, dedup_hash="ns-1", status="APPLIED", match_score=None, applied_at=None)
+    _seed(test_db, dedup_hash="ns-2", status="SHORTLISTED", match_score=None)
+
+    funnel = {row["stage"]: row["count"] for row in client.get("/api/analytics/summary").json()["funnel"]}
+    counts = [funnel[s] for s in ["DISCOVERED", "SCORED", "SHORTLISTED", "RESUME_READY", "APPLIED", "INTERVIEW", "OFFER"]]
+    assert counts == sorted(counts, reverse=True), f"funnel must never increase downstream: {counts}"
+    assert funnel["SCORED"] == 2

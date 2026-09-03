@@ -1,19 +1,51 @@
+# YOUR answers to common application questions.
+#
+# WARNING: these values are typed into REAL job applications verbatim.
+# Every number below is a placeholder - replace them with your own or delete
+# the entry. A wrong value here is a false statement to an employer.
+#
+# Fields:
+#   pattern              substring matched against the question (case-insensitive)
+#   answer               what gets submitted
+#   type                 number | text | radio | select
+#   generic: true        mark broad patterns. The answer is then skipped when the
+#                        question names a specific technology or company, so
+#                        "years of experience with Kubernetes" never gets your
+#                        overall experience number.
+#   exclude_if_contains  skip this entry when the question contains any of these
+#
+# Anything with no match here is answered from config/profile.yaml by the LLM,
+# which is instructed to answer 0/No rather than invent experience.
+
 - pattern: "years of experience"
-  answer: "6"
+  answer: "6"                 # <- your TOTAL years of professional experience
   type: "number"
+  generic: true
 
 - pattern: "authorized to work"
   answer: "Yes"
+  type: "radio"
+
+- pattern: "require sponsorship"
+  answer: "No"
   type: "radio"
 
 - pattern: "visa sponsorship"
   answer: "No"
   type: "radio"
 
-- pattern: "salary"
-  answer: "2500000"
+- pattern: "expected salary"
+  answer: "2500000"           # <- your expected annual salary
+  type: "number"
+
+- pattern: "current salary"
+  answer: "2000000"           # <- your current annual salary
   type: "number"
 
 - pattern: "notice period"
   answer: "30 days"
   type: "text"
+
+- pattern: "willing to relocate"
+  answer: "Yes"
+  type: "radio"

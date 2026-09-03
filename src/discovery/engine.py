@@ -17,6 +17,15 @@ PLATFORM_SITE_MAP = {
     "zip_recruiter": "zip_recruiter",
 }
 
+# search_filters.yaml expresses recency in words; jobspy wants hours.
+DATE_POSTED_HOURS = {
+    "today": 24,
+    "24h": 24,
+    "3days": 72,
+    "week": 168,
+    "month": 720,
+}
+
 class DiscoveryEngine:
     def __init__(self, db_session: Session, config: dict, search_filters: dict, profile: dict, reporter=None):
         self.db = db_session
@@ -39,26 +48,37 @@ class DiscoveryEngine:
         jobs_discovered = 0
         searches = self.filters.get("searches", [])
         exclude_keywords = [k.lower() for k in self.filters.get("exclude_keywords", [])]
-        
+        include_keywords = [k.lower() for k in self.filters.get("include_keywords", [])]
+
+        defaults = self.filters.get("defaults", {}) or {}
+        country = defaults.get("country", "India")
+        default_results = int(defaults.get("results_wanted", 50))
+        default_hours = int(defaults.get("hours_old", 168))
+
         # Determine enabled platforms
         platforms_config = self.config.get("platforms", {})
         enabled_platforms = [PLATFORM_SITE_MAP.get(k, k) for k, v in platforms_config.items() if v]
         if not enabled_platforms:
             return 0
-            
+
         for search in searches:
             title = search.get("title", "")
             location = search.get("location", "")
-            
+            is_remote = str(search.get("work_mode", "")).lower() == "remote"
+            hours_old = DATE_POSTED_HOURS.get(
+                str(search.get("date_posted", "")).lower(), search.get("hours_old", default_hours)
+            )
+
             try:
                 jobs_df = scrape_jobs(
                     site_name=enabled_platforms,
                     search_term=title,
                     location=location,
-                    results_wanted=50,
-                    hours_old=168,
-                    country_indeed="India",
-                    linkedin_fetch_description=True
+                    results_wanted=int(search.get("results_wanted", default_results)),
+                    hours_old=int(hours_old),
+                    country_indeed=search.get("country", country),
+                    is_remote=is_remote,
+                    linkedin_fetch_description=True,
                 )
             except Exception as e:
                 self._log(f"Discovery: error scraping '{title}' in '{location}': {e}", "error")
@@ -87,7 +107,10 @@ class DiscoveryEngine:
                 
                 if self._matches_exclude_keywords(job_title, description, exclude_keywords):
                     continue
-                    
+
+                if not self._matches_include_keywords(job_title, description, include_keywords):
+                    continue
+
                 dedup_hash = self._compute_dedup_hash(company, job_title, job_location)
                 
                 # Check if exists
@@ -123,6 +146,15 @@ class DiscoveryEngine:
                 self.db.add(job)
                 try:
                     self.db.commit()
+                    from src import constants as C, corpus
+
+                    corpus.record_event(
+                        self.db,
+                        job.id,
+                        C.EVENT_DISCOVERED,
+                        f"Discovered on {site or 'unknown'}",
+                        detail=job_location or None,
+                    )
                     jobs_discovered += 1
                 except Exception as e:
                     self.db.rollback()
@@ -144,3 +176,10 @@ class DiscoveryEngine:
             if kw in t or kw in d:
                 return True
         return False
+
+    def _matches_include_keywords(self, title: str, description: str, include_keywords: List[str]) -> bool:
+        """Any-match, not all-match: requiring every keyword rejects almost everything."""
+        if not include_keywords:
+            return True
+        haystack = f"{title} {description}".lower()
+        return any(kw in haystack for kw in include_keywords)

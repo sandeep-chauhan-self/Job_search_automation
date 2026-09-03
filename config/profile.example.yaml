@@ -1,0 +1,58 @@
+# YOUR profile. Everything downstream depends on this being accurate:
+#   - match scores compare THIS against each job description
+#   - tailored resumes are built ONLY from facts listed here
+#   - the "Ask About Me" assistant refuses to answer anything not written here
+#
+# The resume writer is instructed never to invent experience. That protection
+# only works if what is here is true and complete - a missing skill means jobs
+# needing it will score low, and it will never appear on a generated resume.
+#
+# Copy this to profile.yaml and replace every value.
+
+personal:
+  name: ""                    # Full name as it should appear on your resume
+  email: ""
+  phone: ""                   # Include country code, e.g. +91-9876543210
+  location: ""                # e.g. "Bangalore, India"
+  linkedin_url: ""
+  github_url: ""              # Optional - remove if not applicable
+  portfolio_url: ""           # Optional
+
+# 2-4 sentences. Written once here, then rewritten per job by the tailoring step.
+summary: |
+  
+
+# List every role. Most recent first. Bullets should be concrete and measurable -
+# vague bullets produce vague resumes.
+experience:
+  - title: ""
+    company: ""
+    location: ""
+    start_date: ""            # "YYYY-MM"
+    end_date: ""              # "YYYY-MM" or "present"
+    bullets:
+      - ""
+      - ""
+
+# Only list what you can defend in an interview. Anything here may end up on a
+# resume or in an application answer.
+skills:
+  languages: []
+  frameworks: []
+  tools: []
+
+education:
+  - degree: ""
+    institution: ""
+    year:                     # e.g. 2019
+
+# Optional but improves scoring accuracy.
+certifications: []
+
+preferences:
+  target_roles: []            # Titles you actually want
+  target_locations: []
+  work_mode: []               # any of: remote, hybrid, onsite
+  min_salary: ""              # e.g. "25 LPA" - used for filtering, never sent to employers
+  industries_preferred: []
+  companies_blacklist: []     # Never surface jobs from these companies

@@ -112,6 +112,7 @@ class ResumeTailor:
         return merged
 
     def should_generate_cover_letter(self, job_description: str) -> bool:
+        """Simple keyword check: returns True if JD contains 'cover letter' (case-insensitive)."""
         if not job_description:
             return False
         return "cover letter" in job_description.lower()

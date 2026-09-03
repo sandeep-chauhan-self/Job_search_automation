@@ -7,12 +7,15 @@ from datetime import datetime, timedelta, timezone
 from playwright.async_api import async_playwright
 from sqlalchemy.orm import Session
 
+from src import constants as C
+from src import corpus
 from src.auto_applier.form_filler import FormFiller
 from src.auto_applier.question_answerer import QuestionAnswerer
 from src.database.models import Job
 from src.llm.client import LLMClient
+from src.settings import OUTPUT_DIR
 
-SCREENSHOT_DIR = os.path.join("output", "screenshots")
+SCREENSHOT_DIR = os.path.join(OUTPUT_DIR, "screenshots")
 
 
 def _utcnow() -> datetime:
@@ -91,6 +94,10 @@ class AutoApplier:
             page = browser.pages[0] if browser.pages else await browser.new_page()
 
             try:
+                if not await self._ensure_logged_in(page):
+                    stats["failed"] = len(jobs)
+                    return stats
+
                 for index, job in enumerate(jobs, start=1):
                     if self._cancelled():
                         self._log("Apply: cancelled by user.", "warn")
@@ -104,39 +111,55 @@ class AutoApplier:
                         continue
 
                     if job.platform != "linkedin":
-                        job.status = "QUEUED_FOR_MANUAL"
                         job.notes = "Auto-apply supports LinkedIn Easy Apply only."
+                        corpus.change_status(
+                            self.db, job, C.STATUS_QUEUED_FOR_MANUAL,
+                            reason=f"{job.platform} is not supported by auto-apply", commit=False,
+                        )
                         self.db.commit()
                         stats["queued_manual"] += 1
                         self._log(f"Queued for manual: {job.company} ({job.platform}).", "warn")
                         continue
 
                     if not job.resume_path or not os.path.exists(job.resume_path):
-                        job.status = "QUEUED_FOR_MANUAL"
                         job.notes = "No tailored resume on disk - run Prepare first."
+                        corpus.change_status(
+                            self.db, job, C.STATUS_QUEUED_FOR_MANUAL,
+                            reason="No tailored resume on disk", commit=False,
+                        )
                         self.db.commit()
                         stats["queued_manual"] += 1
                         self._log(f"Queued for manual: {job.company} has no resume PDF.", "warn")
                         continue
 
                     self._log(f"Applying to {job.title} at {job.company}...")
+                    self.qa.audit.clear()
                     try:
                         await page.goto(job.job_url, wait_until="domcontentloaded", timeout=45000)
                         submitted = await self._apply_to_job(page, job)
 
+                        self._record_answers(job)
+
                         if submitted:
-                            job.status = "APPLIED"
-                            job.applied_method = "dry_run" if self.dry_run else "auto"
-                            job.applied_at = _utcnow()
+                            method = "dry_run" if self.dry_run else "auto"
+                            corpus.change_status(
+                                self.db, job, C.STATUS_APPLIED,
+                                reason=f"Submitted via {method}", method=method, commit=False,
+                            )
                             stats["applied"] += 1
                             self._log(f"{'Simulated' if self.dry_run else 'Submitted'} application to {job.company}.")
                         else:
-                            job.status = "QUEUED_FOR_MANUAL"
+                            corpus.change_status(
+                                self.db, job, C.STATUS_QUEUED_FOR_MANUAL,
+                                reason=job.notes or "Auto-apply could not complete", commit=False,
+                            )
                             stats["failed"] += 1
                             self._log(f"Could not auto-apply to {job.company} - queued for manual.", "warn")
                     except Exception as exc:
-                        job.status = "QUEUED_FOR_MANUAL"
                         job.notes = f"Auto-apply error: {exc}"
+                        corpus.change_status(
+                            self.db, job, C.STATUS_QUEUED_FOR_MANUAL, reason=str(exc), commit=False,
+                        )
                         stats["failed"] += 1
                         self._log(f"Error applying to {job.company}: {exc}", "error")
 
@@ -194,9 +217,61 @@ class AutoApplier:
         await self._dismiss_modal(page)
         return False
 
+    async def _ensure_logged_in(self, page) -> bool:
+        """Without a LinkedIn session every job silently fails to find Easy Apply.
+
+        Checking once up front turns that into one clear message instead of N
+        confusing per-job failures.
+        """
+        try:
+            await page.goto("https://www.linkedin.com/feed/", wait_until="domcontentloaded", timeout=45000)
+        except Exception as exc:
+            self._log(f"Apply: could not reach LinkedIn ({exc}).", "error")
+            return False
+
+        if "/feed" in page.url and await page.locator("nav").count() > 0:
+            return True
+
+        if self.headless:
+            self._log(
+                "Apply: not signed in to LinkedIn. Set application.headless to false in "
+                "config.yaml and run again - a browser will open for you to sign in once. "
+                "The session is then reused from data/browser_profile.",
+                "error",
+            )
+            return False
+
+        self._log(
+            "Apply: not signed in. Sign in to LinkedIn in the open browser window - "
+            "waiting up to 3 minutes. This is only needed once.",
+            "warn",
+        )
+        try:
+            await page.wait_for_url("**/feed/**", timeout=180000)
+            self._log("Apply: signed in. Session saved for next time.")
+            return True
+        except Exception:
+            self._log("Apply: sign-in did not complete in time. Aborting.", "error")
+            return False
+
     async def _dismiss_modal(self, page) -> None:
         try:
             await page.locator('button[aria-label="Dismiss"]').first.click(timeout=3000)
             await page.locator('button:has-text("Discard")').first.click(timeout=3000)
         except Exception:
             pass
+
+    def _record_answers(self, job: Job) -> None:
+        """Keep what was submitted on your behalf, so a wrong answer is traceable."""
+        if not self.qa.audit:
+            return
+        lines = [f"[{a['source']}] {a['question']} -> {a['answer']}" for a in self.qa.audit]
+        llm_count = sum(1 for a in self.qa.audit if a["source"] == "llm")
+        corpus.record_event(
+            self.db,
+            job.id,
+            C.EVENT_NOTE,
+            f"Form answers submitted ({len(lines)} fields, {llm_count} generated)",
+            detail="\n".join(lines),
+            commit=False,
+        )

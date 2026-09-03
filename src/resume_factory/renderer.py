@@ -4,14 +4,17 @@ from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 from playwright.async_api import async_playwright
 
+from src.settings import OUTPUT_DIR, TEMPLATE_DIR
+
+
 class ResumeRenderer:
-    def __init__(self, template_dir: str = "templates", output_dir: str = "output"):
-        self.template_dir = template_dir
-        self.output_dir = output_dir
-        self.jinja_env = Environment(loader=FileSystemLoader(template_dir))
-        
-        os.makedirs(os.path.join(output_dir, "resumes"), exist_ok=True)
-        os.makedirs(os.path.join(output_dir, "cover_letters"), exist_ok=True)
+    def __init__(self, template_dir: str = None, output_dir: str = None):
+        self.template_dir = template_dir or TEMPLATE_DIR
+        self.output_dir = output_dir or OUTPUT_DIR
+        self.jinja_env = Environment(loader=FileSystemLoader(self.template_dir))
+
+        os.makedirs(os.path.join(self.output_dir, "resumes"), exist_ok=True)
+        os.makedirs(os.path.join(self.output_dir, "cover_letters"), exist_ok=True)
 
     def _slugify(self, text: str) -> str:
         text = str(text).lower()

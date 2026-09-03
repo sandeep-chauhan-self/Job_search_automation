@@ -2,6 +2,8 @@ import logging
 import yaml
 from datetime import datetime, timezone
 from sqlalchemy.orm import Session
+from src import constants as C
+from src import corpus
 from src.database.models import Job, Run
 from src.llm.client import LLMClient, LLMResponseError
 import json
@@ -91,13 +93,27 @@ class ScoringEngine:
                 job.match_reasons = json.dumps(reasons)
                 job.match_gaps = json.dumps(gaps)
                 job.scored_at = datetime.now(timezone.utc).replace(tzinfo=None)
-                
+
+                new_status = "SCORED" if score >= self.min_score else "SKIPPED"
                 if score >= self.min_score:
-                    job.status = "SCORED"
                     stats["above_threshold"] += 1
-                else:
-                    job.status = "SKIPPED"
-                    
+
+                corpus.change_status(
+                    self.db,
+                    job,
+                    new_status,
+                    reason=f"Match score {score}" + ("" if score >= self.min_score else f" below threshold {self.min_score}"),
+                    commit=False,
+                )
+                corpus.record_event(
+                    self.db,
+                    job.id,
+                    C.EVENT_SCORED,
+                    f"Scored {score}/100",
+                    detail=json.dumps({"reasons": reasons, "gaps": gaps}),
+                    commit=False,
+                )
+
                 stats["scored"] += 1
                 self.db.commit()
                 

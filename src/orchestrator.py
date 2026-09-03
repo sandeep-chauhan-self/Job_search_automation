@@ -4,6 +4,8 @@ import logging
 import uuid
 from datetime import datetime, timezone
 
+from src import constants as C
+from src import corpus
 from src.auto_applier.applier import AutoApplier
 from src.config_loader import (
     load_answers,
@@ -144,17 +146,34 @@ class Orchestrator:
 
                 self.reporter.log(f"Tailoring resume for {job.title} at {job.company}...")
                 tailored = self.tailor.tailor_for_job(job_dict, job.id, run_id)
-                job.resume_path = await self.renderer.render_resume_pdf(tailored, job.id, job.company)
+                resume_path = await self.renderer.render_resume_pdf(tailored, job.id, job.company)
+                corpus.register_document(
+                    self.db,
+                    job,
+                    C.DOCUMENT_RESUME,
+                    resume_path,
+                    content=tailored,
+                    model_used=self.config.get("llm", {}).get("provider"),
+                    commit=False,
+                )
 
                 if generate_cover and self.tailor.should_generate_cover_letter(job.description or ""):
                     self.reporter.log(f"Writing cover letter for {job.company}...")
                     letter = self.tailor.generate_cover_letter(job_dict, job.id, run_id)
-                    job.cover_letter_path = await self.renderer.render_cover_letter_pdf(
+                    cover_path = await self.renderer.render_cover_letter_pdf(
                         letter, self.profile.get("personal", {}), job.title, job.company, job.id
                     )
+                    corpus.register_document(
+                        self.db,
+                        job,
+                        C.DOCUMENT_COVER_LETTER,
+                        cover_path,
+                        content=letter,
+                        model_used=self.config.get("llm", {}).get("provider"),
+                        commit=False,
+                    )
 
-                job.status = "RESUME_READY"
-                job.resume_generated_at = _utcnow()
+                corpus.change_status(self.db, job, C.STATUS_RESUME_READY, commit=False)
                 self.db.commit()
                 stats["prepared"] += 1
                 self.reporter.log(f"Documents ready for {job.company}.")
@@ -162,6 +181,9 @@ class Orchestrator:
             except Exception as exc:
                 self.db.rollback()
                 job.notes = f"Resume generation failed: {exc}"
+                corpus.record_event(
+                    self.db, job.id, C.EVENT_ERROR, "Resume generation failed", detail=str(exc), commit=False
+                )
                 self.db.commit()
                 stats["failed"] += 1
                 self.reporter.log(f"Resume generation failed for {job.company}: {exc}", "error")
