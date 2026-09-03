@@ -10,12 +10,9 @@ class LLMClient:
     def __init__(self, db_session, config: dict, secrets: dict):
         self.db = db_session
         self.config = config.get("llm", {})
-        self.api_key = secrets.get("llm_api_key")
-        
-        # Configure LiteLLM
-        if self.api_key and self.api_key != "your-api-key-here":
-            litellm.api_key = self.api_key
-            
+        api_key = secrets.get("llm_api_key")
+        self.api_key = api_key if api_key and api_key != "your-api-key-here" else None
+
         litellm.suppress_debug_info = True
 
     def complete(
@@ -71,6 +68,16 @@ class LLMClient:
             "temperature": temperature,
             "max_tokens": max_tokens
         }
+
+        # Pass the key explicitly per call rather than mutating the global
+        # litellm.api_key. litellm applies this to whichever provider the
+        # model string's prefix maps to (openrouter/, anthropic/, ollama/,
+        # or bare = openai). Setting it globally instead pins every request
+        # to OpenAI's endpoint regardless of the intended provider - that
+        # is why an OpenRouter key with a bare "gpt-4o-mini" model string
+        # gets rejected by api.openai.com.
+        if self.api_key:
+            kwargs["api_key"] = self.api_key
         
         if response_format == "json" and not model.startswith("ollama"):
             kwargs["response_format"] = {"type": "json_object"}

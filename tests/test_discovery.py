@@ -1,7 +1,6 @@
 import pytest
 import pandas as pd
 from src.discovery.engine import DiscoveryEngine
-from src.database.connection import get_db
 from src.database.models import Job
 
 def test_dedup_hash():
@@ -29,8 +28,8 @@ def test_exclude_keywords():
     assert engine._matches_exclude_keywords("Software Engineer", "This is an unpaid role.", ["unpaid"])
     assert not engine._matches_exclude_keywords("Senior Software Engineer", "Great pay", ["intern"])
 
-def test_discovery_run(monkeypatch):
-    db = get_db()
+def test_discovery_run(monkeypatch, temp_db):
+    db = temp_db
     
     config = {"platforms": {"linkedin": True}}
     filters = {"searches": [{"title": "Dev", "location": "Remote"}], "exclude_keywords": ["intern"]}

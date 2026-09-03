@@ -1,15 +1,25 @@
+# What to search for. Every search below runs against every enabled platform
+# in config.yaml, so 2 searches x 5 platforms = 10 scrapes per discovery run.
+
+defaults:
+  country: "India"          # Indeed/Glassdoor need a country. Change if not India.
+  results_wanted: 50        # Per search, per platform
+  hours_old: 168            # Fallback when a search has no date_posted
+
 searches:
   - title: "Senior Software Engineer"
     location: "Bangalore"
-    experience_level: "mid_senior"
-    work_mode: "remote"
-    date_posted: "week"
-    
+    work_mode: "remote"     # "remote" restricts to remote listings; omit for any
+    date_posted: "week"     # today | 3days | week | month
+
   - title: "Staff Engineer"
     location: "India"
-    experience_level: "senior"
     work_mode: "remote"
     date_posted: "week"
 
+# Drop a job if its title or description contains any of these.
 exclude_keywords: ["intern", "junior", "fresher", "unpaid"]
-include_keywords: ["python", "react"]
+
+# Keep a job only if its title or description contains at least one of these.
+# Leave empty to keep everything that survived exclude_keywords.
+include_keywords: []

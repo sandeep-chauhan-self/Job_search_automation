@@ -1,0 +1,91 @@
+"""Shared vocabulary for job pipeline state.
+
+Kept in one place so the API, UI, and pipeline cannot drift apart.
+"""
+
+# Ordered by pipeline progression.
+STATUS_DISCOVERED = "DISCOVERED"
+STATUS_SCORED = "SCORED"
+STATUS_SKIPPED = "SKIPPED"
+STATUS_SHORTLISTED = "SHORTLISTED"
+STATUS_APPROVED = "APPROVED"
+STATUS_RESUME_READY = "RESUME_READY"
+STATUS_APPLIED = "APPLIED"
+STATUS_QUEUED_FOR_MANUAL = "QUEUED_FOR_MANUAL"
+STATUS_SCREENING = "SCREENING"
+STATUS_INTERVIEW = "INTERVIEW"
+STATUS_OFFER = "OFFER"
+STATUS_REJECTED = "REJECTED"
+STATUS_WITHDRAWN = "WITHDRAWN"
+STATUS_GHOSTED = "GHOSTED"
+
+ALL_STATUSES = [
+    STATUS_DISCOVERED,
+    STATUS_SCORED,
+    STATUS_SKIPPED,
+    STATUS_SHORTLISTED,
+    STATUS_APPROVED,
+    STATUS_RESUME_READY,
+    STATUS_APPLIED,
+    STATUS_QUEUED_FOR_MANUAL,
+    STATUS_SCREENING,
+    STATUS_INTERVIEW,
+    STATUS_OFFER,
+    STATUS_REJECTED,
+    STATUS_WITHDRAWN,
+    STATUS_GHOSTED,
+]
+
+# Statuses meaning "I have applied and this is still alive".
+ACTIVE_PURSUIT_STATUSES = [
+    STATUS_APPLIED,
+    STATUS_SCREENING,
+    STATUS_INTERVIEW,
+    STATUS_OFFER,
+]
+
+# Statuses meaning "this is over".
+CLOSED_STATUSES = [
+    STATUS_REJECTED,
+    STATUS_WITHDRAWN,
+    STATUS_GHOSTED,
+    STATUS_SKIPPED,
+]
+
+# Statuses that mean the application was actually submitted, used for funnel
+# math where `applied_at` may be absent on manually imported rows.
+POST_APPLY_STATUSES = [
+    STATUS_APPLIED,
+    STATUS_SCREENING,
+    STATUS_INTERVIEW,
+    STATUS_OFFER,
+    STATUS_REJECTED,
+    STATUS_GHOSTED,
+]
+
+FUNNEL_ORDER = [
+    STATUS_DISCOVERED,
+    STATUS_SCORED,
+    STATUS_SHORTLISTED,
+    STATUS_RESUME_READY,
+    STATUS_APPLIED,
+    STATUS_INTERVIEW,
+    STATUS_OFFER,
+]
+
+# Event types recorded on a job's timeline.
+EVENT_DISCOVERED = "discovered"
+EVENT_SCORED = "scored"
+EVENT_STATUS_CHANGED = "status_changed"
+EVENT_DOCUMENT_GENERATED = "document_generated"
+EVENT_APPLIED = "applied"
+EVENT_NOTE = "note"
+EVENT_INTERVIEW = "interview"
+EVENT_CONTACT = "contact"
+EVENT_FOLLOW_UP = "follow_up"
+EVENT_ERROR = "error"
+
+DOCUMENT_RESUME = "resume"
+DOCUMENT_COVER_LETTER = "cover_letter"
+
+INTERVIEW_OUTCOMES = ["SCHEDULED", "PASSED", "FAILED", "CANCELLED", "NO_SHOW", "PENDING"]
