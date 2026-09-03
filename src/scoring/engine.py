@@ -1,6 +1,6 @@
 import logging
 import yaml
-from datetime import datetime
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from src.database.models import Job, Run
 from src.llm.client import LLMClient, LLMResponseError
@@ -35,15 +35,23 @@ Score this candidate against this job. Return JSON in exactly this format:
 }}"""
 
 class ScoringEngine:
-    def __init__(self, db_session: Session, llm_client: LLMClient, config: dict, profile: dict):
+    def __init__(self, db_session: Session, llm_client: LLMClient, config: dict, profile: dict, reporter=None):
         self.db = db_session
         self.llm = llm_client
         self.min_score = config.get("application", {}).get("min_match_score", 60)
         self.profile = profile
         self.profile_yaml = yaml.dump(profile, sort_keys=False)
+        self.reporter = reporter
+
+    def _log(self, message: str, level: str = "info") -> None:
+        if self.reporter:
+            self.reporter.log(message, level)
+        else:
+            logging.log(logging.ERROR if level == "error" else logging.INFO, message)
 
     def run(self, run_id: str) -> dict:
         stats = {"scored": 0, "skipped": 0, "errors": 0, "above_threshold": 0}
+        seen_errors = set()
         
         jobs_to_score = self.db.query(Job).filter(
             Job.status == "DISCOVERED",
@@ -82,7 +90,7 @@ class ScoringEngine:
                 job.match_score = score
                 job.match_reasons = json.dumps(reasons)
                 job.match_gaps = json.dumps(gaps)
-                job.scored_at = datetime.utcnow()
+                job.scored_at = datetime.now(timezone.utc).replace(tzinfo=None)
                 
                 if score >= self.min_score:
                     job.status = "SCORED"
@@ -94,16 +102,22 @@ class ScoringEngine:
                 self.db.commit()
                 
             except LLMResponseError as e:
-                logging.error(f"Failed to score job {job.id}: {e}")
+                self._note_error(seen_errors, f"Scoring failed: {e}")
                 job.notes = f"LLM Error: {e}"
                 # Keep status DISCOVERED so it can be retried later
                 self.db.commit()
                 stats["errors"] += 1
             except Exception as e:
-                logging.error(f"Unexpected error scoring job {job.id}: {e}")
+                self._note_error(seen_errors, f"Unexpected scoring error: {e}")
                 stats["errors"] += 1
-                
+
         return stats
+
+    def _note_error(self, seen_errors: set, message: str) -> None:
+        """Log each distinct failure once; repeating the same message per job would flood the activity panel."""
+        if message not in seen_errors:
+            seen_errors.add(message)
+            self._log(message, "error")
 
     def _build_prompt(self, job: Job) -> tuple[str, str]:
         user_prompt = USER_PROMPT_TEMPLATE.format(

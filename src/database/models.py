@@ -8,10 +8,13 @@ Base = declarative_base()
 def generate_uuid():
     return str(uuid.uuid4())
 
+def utcnow():
+    return datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+
 class Run(Base):
     __tablename__ = 'runs'
     id = Column(String, primary_key=True, default=generate_uuid)
-    started_at = Column(DateTime, default=datetime.datetime.utcnow)
+    started_at = Column(DateTime, default=utcnow)
     completed_at = Column(DateTime, nullable=True)
     status = Column(String, default="RUNNING")  # RUNNING, COMPLETED, FAILED
     jobs_discovered = Column(Integer, default=0)
@@ -42,7 +45,7 @@ class Job(Base):
     cover_letter_path = Column(String, nullable=True)
     salary_info = Column(String, nullable=True)
     work_mode = Column(String, nullable=True)
-    discovered_at = Column(DateTime, default=datetime.datetime.utcnow)
+    discovered_at = Column(DateTime, default=utcnow)
     scored_at = Column(DateTime, nullable=True)
     resume_generated_at = Column(DateTime, nullable=True)
     applied_at = Column(DateTime, nullable=True)
@@ -60,4 +63,4 @@ class LLMUsage(Base):
     input_tokens = Column(Integer, default=0)
     output_tokens = Column(Integer, default=0)
     cost_usd = Column(Float, default=0.0)
-    timestamp = Column(DateTime, default=datetime.datetime.utcnow)
+    timestamp = Column(DateTime, default=utcnow)

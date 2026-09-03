@@ -7,19 +7,137 @@
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <div class="sidebar">
-        <h2>Job Automation</h2>
-        <ul>
-            <li><a href="#" onclick="loadJobs()">Jobs</a></li>
-            <li><a href="#" onclick="loadAnalytics()">Analytics</a></li>
-        </ul>
-    </div>
-    <div class="content">
-        <h1>Dashboard</h1>
-        <div id="main-content">
-            <!-- Dynamic content loads here -->
+<div class="app">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <span class="brand-mark">JS</span>
+            <div>
+                <strong>Job Automation</strong>
+                <small>control panel</small>
+            </div>
         </div>
+
+        <nav>
+            <button class="nav-item active" data-view="pipeline">Pipeline</button>
+            <button class="nav-item" data-view="review">Review &amp; Launch</button>
+            <button class="nav-item" data-view="manual">Manual Queue</button>
+            <button class="nav-item" data-view="analytics">Analytics</button>
+            <button class="nav-item" data-view="runs">Run History</button>
+        </nav>
+
+        <div class="sidebar-foot">
+            <div class="run-state">
+                <span id="run-dot" class="dot idle"></span>
+                <span id="run-label">Idle</span>
+            </div>
+            <div id="run-phase" class="run-phase"></div>
+            <div class="progress-track"><div id="run-progress" class="progress-fill"></div></div>
+            <button id="btn-cancel" class="btn btn-danger btn-block" disabled>Stop Run</button>
+        </div>
+    </aside>
+
+    <main class="content">
+
+        <header class="topbar">
+            <div>
+                <h1 id="view-title">Pipeline</h1>
+                <p id="view-subtitle" class="subtitle">Discover, score, and triage every opening in one place.</p>
+            </div>
+            <div class="topbar-actions">
+                <button id="btn-discover" class="btn btn-primary">Run Discovery</button>
+                <button id="btn-refresh" class="btn btn-ghost" title="Reload data">Refresh</button>
+                <button id="btn-logs" class="btn btn-ghost">Activity</button>
+            </div>
+        </header>
+
+        <section id="stat-strip" class="stat-strip"></section>
+
+        <section id="view-pipeline" class="view">
+            <div class="toolbar">
+                <input id="filter-search" class="input" type="search" placeholder="Search title or company">
+                <select id="filter-status" class="input">
+                    <option value="">All statuses</option>
+                </select>
+                <select id="filter-platform" class="input">
+                    <option value="">All platforms</option>
+                </select>
+                <label class="range-label">
+                    Min score <output id="filter-score-out">0</output>
+                    <input id="filter-score" type="range" min="0" max="100" step="5" value="0">
+                </label>
+                <select id="filter-sort" class="input">
+                    <option value="discovered_at">Newest first</option>
+                    <option value="match_score">Highest score</option>
+                    <option value="company">Company A-Z</option>
+                    <option value="applied_at">Recently applied</option>
+                </select>
+            </div>
+
+            <div class="bulk-bar" id="bulk-bar" hidden>
+                <span id="bulk-count">0 selected</span>
+                <button class="btn btn-sm" data-bulk="APPROVED">Approve</button>
+                <button class="btn btn-sm" data-bulk="REJECTED">Reject</button>
+                <button class="btn btn-sm btn-primary" id="btn-prepare">Generate Resumes</button>
+                <button class="btn btn-sm btn-warn" id="btn-apply">Apply Now</button>
+            </div>
+
+            <div class="table-wrap">
+                <table class="jobs-table">
+                    <thead>
+                        <tr>
+                            <th class="col-check"><input type="checkbox" id="check-all"></th>
+                            <th>Company</th>
+                            <th>Role</th>
+                            <th>Platform</th>
+                            <th class="col-score">Match</th>
+                            <th>Status</th>
+                            <th>Found</th>
+                            <th class="col-actions"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="jobs-body"></tbody>
+                </table>
+                <div id="jobs-empty" class="empty" hidden></div>
+            </div>
+
+            <div class="pager">
+                <button id="page-prev" class="btn btn-ghost btn-sm">Previous</button>
+                <span id="page-label"></span>
+                <button id="page-next" class="btn btn-ghost btn-sm">Next</button>
+            </div>
+        </section>
+
+        <section id="view-analytics" class="view" hidden></section>
+        <section id="view-runs" class="view" hidden></section>
+
+    </main>
+
+    <aside id="log-panel" class="log-panel">
+        <div class="log-head">
+            <strong>Live Activity</strong>
+            <button id="btn-log-close" class="icon-btn" aria-label="Close activity panel">&#10005;</button>
+        </div>
+        <div id="log-body" class="log-body">
+            <p class="log-empty">Nothing running. Start a run to watch it live.</p>
+        </div>
+    </aside>
+
+    <div id="drawer" class="drawer" hidden>
+        <div class="drawer-head">
+            <div>
+                <h2 id="drawer-title"></h2>
+                <p id="drawer-sub" class="subtitle"></p>
+            </div>
+            <button id="btn-drawer-close" class="icon-btn" aria-label="Close details">&#10005;</button>
+        </div>
+        <div id="drawer-body" class="drawer-body"></div>
     </div>
-    <script src="/static/app.js"></script>
+    <div id="scrim" class="scrim" hidden></div>
+
+    <div id="toast" class="toast" hidden></div>
+
+</div>
+<script src="/static/app.js"></script>
 </body>
 </html>

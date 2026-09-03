@@ -4,8 +4,15 @@ __pycache__/
 *.pyc
 .env
 
-# Ignore personal data
-USER_INPUT_REQUIRED.txt
-data/Original_resume/
-godsscion/config/*.py
-aihawk_core/*/data_folder/*
+# Secrets - never commit real credentials
+**/secrets.yaml
+config/secrets.yaml
+
+# Local data and generated artifacts
+data/
+output/
+*.db
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/

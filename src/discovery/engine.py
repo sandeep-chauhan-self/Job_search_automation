@@ -1,34 +1,48 @@
 import hashlib
 import logging
 from typing import List, Dict, Any
-from jobspy import scrape_jobs
 from sqlalchemy.orm import Session
 from src.database.models import Job, Run
 
+# Optional at import time: a missing/broken jobspy install must not stop the
+# dashboard or the rest of the pipeline from loading. Only run() requires it.
+try:
+    from jobspy import scrape_jobs
+except ImportError:  # pragma: no cover - depends on local environment
+    scrape_jobs = None
+
+# config.yaml uses friendly platform keys; jobspy's Site enum uses its own names.
+PLATFORM_SITE_MAP = {
+    "google_jobs": "google",
+    "zip_recruiter": "zip_recruiter",
+}
+
 class DiscoveryEngine:
-    def __init__(self, db_session: Session, config: dict, search_filters: dict, profile: dict):
+    def __init__(self, db_session: Session, config: dict, search_filters: dict, profile: dict, reporter=None):
         self.db = db_session
         self.config = config
         self.filters = search_filters
         self.profile = profile
+        self.reporter = reporter
         self.blacklist = [c.lower() for c in profile.get("preferences", {}).get("companies_blacklist", [])]
-        
+
+    def _log(self, message: str, level: str = "info") -> None:
+        if self.reporter:
+            self.reporter.log(message, level)
+        else:
+            logging.log(logging.ERROR if level == "error" else logging.INFO, message)
+
     def run(self, run_id: str) -> int:
+        if scrape_jobs is None:
+            raise RuntimeError("python-jobspy is not installed. Run: pip install python-jobspy")
+
         jobs_discovered = 0
         searches = self.filters.get("searches", [])
         exclude_keywords = [k.lower() for k in self.filters.get("exclude_keywords", [])]
         
-        # Determine enabled platforms mapped to JobSpy supported sites
+        # Determine enabled platforms
         platforms_config = self.config.get("platforms", {})
-        site_map = {
-            "linkedin": "linkedin",
-            "indeed": "indeed",
-            "glassdoor": "glassdoor",
-            "zip_recruiter": "zip_recruiter",
-            "google_jobs": "google",
-            "google": "google"
-        }
-        enabled_platforms = [site_map[k] for k, v in platforms_config.items() if v and k in site_map]
+        enabled_platforms = [PLATFORM_SITE_MAP.get(k, k) for k, v in platforms_config.items() if v]
         if not enabled_platforms:
             return 0
             
@@ -47,12 +61,15 @@ class DiscoveryEngine:
                     linkedin_fetch_description=True
                 )
             except Exception as e:
-                logging.error(f"Error scraping for {title} in {location}: {e}")
+                self._log(f"Discovery: error scraping '{title}' in '{location}': {e}", "error")
                 continue
                 
             if jobs_df is None or jobs_df.empty:
+                self._log(f"Discovery: no results for '{title}' in '{location}'.")
                 continue
-                
+
+            self._log(f"Discovery: {len(jobs_df)} raw result(s) for '{title}' in '{location}'.")
+
             for _, row in jobs_df.iterrows():
                 job_title = str(row.get("title", "")).strip()
                 company = str(row.get("company", "")).strip()
@@ -109,7 +126,7 @@ class DiscoveryEngine:
                     jobs_discovered += 1
                 except Exception as e:
                     self.db.rollback()
-                    logging.warning(f"Failed to insert job {job_title} at {company}: {e}")
+                    self._log(f"Discovery: failed to insert job {job_title} at {company}: {e}", "error")
                     
         return jobs_discovered
 
