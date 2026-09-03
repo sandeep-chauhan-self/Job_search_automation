@@ -1,42 +1,217 @@
 personal:
-  name: "John Doe"
-  email: "john@example.com"
-  phone: "+91-9876543210"
-  location: "Bangalore, India"
-  linkedin_url: "https://linkedin.com/in/johndoe"
-  github_url: "https://github.com/johndoe"
-  portfolio_url: "https://johndoe.dev"
+  name: Sandeep Chauhan
+  email: Sandeepchauhan10401@gmail.com
+  phone: +91-9625401736
+  location: Bengaluru, India
+  linkedin_url: https://linkedin.com/in/sandeep-chauhan-243012181
+  github_url: https://github.com/sandeep-chauhan-self
+  portfolio_url: ""
+summary:
+  "Python Developer with 3+ years building production-grade software in safety-critical
+  environments. Experienced in Python, Django, Flask, REST APIs, PostgreSQL, and CI/CD
+  workflows. Delivered 8 production releases at Honeywell and resolved 100+ critical
+  defects. Certified Cyber Security Advocate. Hands-on with LLM integration, agentic
+  AI workflows, n8n, and prompt engineering to automate business processes.
 
-summary: |
-  Software Engineer with 6+ years of experience in full-stack development,
-  specializing in Python, React, and cloud infrastructure. Led teams of 5-8 engineers
-  at two startups. Passionate about building developer tools and automation.
-
+  "
 experience:
-  - title: "Senior Software Engineer"
-    company: "TechCorp"
-    location: "Bangalore, India"
-    start_date: "2022-01"
-    end_date: "present"
+  - title: Software Developer
+    company: Honeywell
+    location: Bengaluru, India
+    start_date: 2024-04
+    end_date: present
     bullets:
-      - "Led migration of monolithic API to microservices, reducing latency by 40%"
-      - "Built CI/CD pipeline serving 200+ deployments/week using GitHub Actions"
-      - "Mentored 3 junior developers through code reviews and pair programming"
-
+      - Core contributor to a production-grade, safety-critical industrial application
+        — delivered 8+ releases maintaining full backward compatibility and zero regression.
+      - Resolved 100+ high-impact defects across performance, safety, and security domains
+        — reduced critical open defect count by 60% and improved release quality by 40%.
+      - Owned security responsibilities as Certified Security Advocate, applying secure
+        coding practices aligned with EUCRA policies and driving inclusion of security
+        fixes in release scope.
+      - Applied LLM tools and agentic AI workflows to cut code review and documentation
+        time by 30%.
+      - Contributed to NPI — supported early-stage design decisions and system hardening
+        in regulated, SIL-aligned environments.
+  - title: Software Developer
+    company: Velocity Pvt. Ltd.
+    location: Bengaluru, India
+    start_date: 2022-06
+    end_date: 2023-06
+    bullets:
+      - Developed and stabilized backend Python application logic for customer-facing
+        production systems.
+      - Closed ~600 production issues — improved system reliability by 35% and reduced
+        recurring defects.
+      - Implemented multi-currency support and SQL query optimization for core data workflows;
+        collaborated directly with clients to reduce delivery turnaround by 25%.
+projects:
+  - name: Stock Analysis & Trading Signal Platform
+    description:
+      Built full-stack platform with Flask backend and React frontend for
+      asynchronous, technical-indicator-driven signal generation. Designed modular backend
+      and end-to-end data pipeline.
+  - name: AI-Powered Business Automation Suite
+    description:
+      Built multi-step agentic AI workflows in n8n. Integrated Claude API
+      and MCP to build tool-augmented AI agents. Applied chain-of-thought and few-shot
+      prompt engineering; used RAG.
 skills:
-  languages: ["Python", "JavaScript", "TypeScript", "Go"]
-  frameworks: ["React", "FastAPI", "Django", "Next.js"]
-  tools: ["Docker", "Kubernetes", "AWS", "PostgreSQL", "Redis"]
-
+  languages:
+    - Python
+    - JavaScript
+    - HTML
+    - CSS
+    - SQL
+  frameworks:
+    - Django
+    - Flask
+    - FastAPI
+    - Django REST Framework
+    - React
+    - Pandas
+    - NumPy
+  tools:
+    - PostgreSQL
+    - MySQL
+    - Git
+    - GitHub
+    - CI/CD
+    - Jira
+    - n8n
+    - Prompt Engineering
+    - RAG
 education:
-  - degree: "B.Tech Computer Science"
-    institution: "IIT Delhi"
-    year: 2019
-
+  - degree: B.Tech — Computer Science Engineering
+    institution: Dr. A.P.J. Abdul Kalam Technical University (AKTU)
+    year: 2022
+certifications:
+  - Cyber Security Advocate — Honeywell
+  - SIL Level 1 Certified
 preferences:
-  target_roles: ["Senior Software Engineer", "Staff Engineer", "Tech Lead"]
-  target_locations: ["Bangalore", "Remote"]
-  work_mode: ["remote", "hybrid"]
-  min_salary: "25 LPA"
-  industries_preferred: ["SaaS", "Developer Tools", "Fintech"]
-  companies_blacklist: ["SpamCorp", "SketchyInc"]
+  target_roles:
+    - Backend Developer
+    - Python Developer
+    - Software Engineer
+    - AI Engineer
+    - Software Developer
+  target_locations:
+    - Bengaluru
+    - Remote
+  work_mode:
+    - remote
+    - hybrid
+    - in-person
+  min_salary: ""
+  industries_preferred:
+    - SaaS
+    - Automation
+    - Fintech
+    - Software
+  companies_blacklist: []
+engineering_focus:
+  primary:
+    - Python backend engineering
+    - Production software reliability
+    - API and database development
+    - Automation and AI-assisted engineering
+  secondary:
+    - Agentic AI systems
+    - LLM integrations
+    - Workflow orchestration
+    - System design and architecture
+    - Security-aware software development
+  preferred_backend_stack:
+    - Python
+    - Django
+    - Flask
+    - FastAPI
+    - REST APIs
+    - PostgreSQL
+ai_and_automation:
+  interests:
+    - LLM application development
+    - Agentic AI
+    - Tool-using agents
+    - MCP
+    - RAG
+    - Prompt engineering
+    - Workflow automation
+    - n8n
+    - LangGraph
+  working_patterns:
+    - Prefers practical, runnable implementations over purely theoretical discussion.
+    - Interested in agent architectures with explicit state, orchestration, persistence,
+      evaluation, validation, and rollback behavior.
+    - Interested in using AI to automate repetitive software-engineering and business
+      workflows.
+current_or_recent_projects:
+  - name: Observable Job Agent Reconstruction
+    description:
+      Reconstructing and analyzing a LangGraph-based job-matching agent from
+      a multi-part technical article, including its architecture, state flow, tool usage,
+      evaluation, and self-improvement mechanisms.
+    interests_involved:
+      - LangGraph
+      - agent architecture
+      - job matching
+      - tool orchestration
+      - evaluation
+      - self-improvement
+  - name: Stock Analysis & Trading Signal Platform
+    description:
+      Full-stack Flask + React platform for asynchronous financial-data processing
+      and technical-indicator-driven signal generation.
+  - name: AI-Powered Business Automation Suite
+    description:
+      Agentic automation workflows using n8n, Claude API, MCP, RAG, and prompt-engineering
+      techniques for multi-step business processes.
+technical_interests:
+  - Backend systems
+  - Distributed/workflow-oriented architectures
+  - Agentic AI
+  - LLM application engineering
+  - API design
+  - Database performance
+  - Software reliability
+  - Cybersecurity
+  - CI/CD and release engineering
+  - Production debugging
+research_and_problem_solving_style:
+  - Values precision and correctness over unnecessary verbosity.
+  - Prefers concrete examples and implementation-level detail.
+  - Likes comparing an approach with adjacent/common approaches when the distinction
+    matters.
+  - For complex systems, cares about execution flow, state, lifecycle, orchestration,
+    persistence, rollback, evaluation, verification, constraints, guardrails, invariants,
+    and failure modes.
+  - Tends to investigate root causes using reproducible evidence rather than accepting
+    default behavior at face value.
+career_preferences:
+  strong_fit:
+    - Backend-heavy software engineering
+    - Python-focused roles
+    - AI/LLM application engineering
+    - Agentic AI engineering
+    - Automation engineering
+    - Software roles involving production debugging and reliability
+  location_preference:
+    - Bengaluru
+    - Remote
+    - Pune
+    - Gurugram
+    - Noida
+    - India
+  work_mode_preference:
+    - remote
+    - hybrid
+    - in-person
+personal_working_preferences:
+  communication:
+    - Direct answers first.
+    - Minimal filler.
+    - Use structure only when it improves clarity.
+    - Question assumptions when doing so improves the decision.
+  decision_style:
+    - Prefers rational trade-off analysis.
+    - Values concrete numbers, constraints, and failure modes.
+    - Wants uncertainty stated explicitly rather than hidden behind confident language.
