@@ -7,55 +7,116 @@
 </head>
 <body>
 
-    <h1>{{ name }}</h1>
-    
-    <div class="contact-info">
-        {{ email }} &nbsp;|&nbsp; {{ phone }} &nbsp;|&nbsp; {{ location }}<br>
-        {{ linkedin_url }} &nbsp;|&nbsp; {{ github_url }}
-        {% if portfolio_url %}&nbsp;|&nbsp; {{ portfolio_url }}{% endif %}
-    </div>
-
-    <h2>Professional Summary</h2>
-    <p>{{ summary }}</p>
-
-    <h2>Experience</h2>
-    {% for job in experience %}
-    <div class="experience-item">
-        <div class="item-header">
-            <div>
-                <span class="title">{{ job.title }}</span>, 
-                <span class="company">{{ job.company }}</span>
-            </div>
-            <div class="dates">{{ job.dates }}</div>
+    <header class="masthead">
+        <h1>{{ name }}</h1>
+        {% if headline %}<div class="headline">{{ headline }}</div>{% endif %}
+        <div class="contact-info">
+            {{ email }} &nbsp;&bull;&nbsp; {{ phone }} &nbsp;&bull;&nbsp; {{ location }}<br>
+            {{ linkedin_url }}{% if github_url %} &nbsp;&bull;&nbsp; {{ github_url }}{% endif %}{% if portfolio_url %} &nbsp;&bull;&nbsp; {{ portfolio_url }}{% endif %}
         </div>
-        <ul>
-            {% for bullet in job.bullets %}
-            <li>{{ bullet }}</li>
+    </header>
+
+    {% if summary %}
+    <section>
+        <h2>Professional Summary</h2>
+        <p>{{ summary }}</p>
+    </section>
+    {% endif %}
+
+    {% if impact_snapshot %}
+    <section>
+        <h2>Impact Snapshot</h2>
+        <ul class="impact-list">
+            {% for item in impact_snapshot %}
+            <li>{{ item }}</li>
             {% endfor %}
         </ul>
-    </div>
-    {% endfor %}
+    </section>
+    {% endif %}
 
-    <h2>Skills</h2>
-    {% for category, items in skills.items() %}
-    <div class="skills-row">
-        <span class="skills-category">{{ category | capitalize }}:</span>
-        <span class="skills-list">{{ items | join(", ") }}</span>
-    </div>
-    {% endfor %}
-
-    <h2>Education</h2>
-    {% for edu in education %}
-    <div class="education-item">
-        <div class="item-header">
-            <div>
-                <span class="title">{{ edu.degree }}</span>, 
-                <span class="company">{{ edu.institution }}</span>
+    {% if experience %}
+    <section>
+        <h2>Work Experience</h2>
+        {% for job in experience %}
+        <div class="entry">
+            <div class="entry-header">
+                <div class="entry-primary">
+                    <span class="company">{{ job.company }}</span>{% if job.title %}, <span class="title">{{ job.title }}</span>{% endif %}
+                </div>
+                <div class="entry-meta">
+                    {{ job.dates }}{% if job.location %} &nbsp;|&nbsp; {{ job.location }}{% endif %}
+                </div>
             </div>
-            <div class="dates">{{ edu.year }}</div>
+            <ul>
+                {% for bullet in job.bullets %}
+                <li>{{ bullet }}</li>
+                {% endfor %}
+            </ul>
         </div>
-    </div>
-    {% endfor %}
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if projects %}
+    <section>
+        <h2>Selected Projects</h2>
+        {% for project in projects %}
+        <div class="entry">
+            <div class="entry-header">
+                <div class="entry-primary">
+                    <span class="company">{{ project.name }}</span>{% if project.tech_stack %}, <span class="tech-stack">{{ project.tech_stack }}</span>{% endif %}
+                </div>
+            </div>
+            <ul>
+                {% for bullet in project.bullets %}
+                <li>{{ bullet }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if skills %}
+    <section>
+        <h2>Technical Skills</h2>
+        {% for category, items in skills.items() %}
+        {% if items %}
+        <div class="skills-row">
+            <span class="skills-category">{{ category }}</span>
+            <span class="skills-list">{{ items | join(", ") }}</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if certifications %}
+    <section>
+        <h2>Certifications</h2>
+        <ul class="cert-list">
+            {% for cert in certifications %}
+            <li>{{ cert }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if include_education and education %}
+    <section>
+        <h2>Education</h2>
+        {% for edu in education %}
+        <div class="entry entry-compact">
+            <div class="entry-header">
+                <div class="entry-primary">
+                    <span class="company">{{ edu.institution }}</span>{% if edu.degree %}, <span class="title">{{ edu.degree }}</span>{% endif %}
+                </div>
+                <div class="entry-meta">{{ edu.year }}</div>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
 
 </body>
 </html>

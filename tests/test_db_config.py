@@ -21,7 +21,8 @@ def test_config_loading():
     assert config["application"]["daily_limit"] == 25
     
     profile = load_profile()
-    assert profile["personal"]["name"] == "John Doe"
+    # Placeholder-name check mirrors src/assistant.py's is_placeholder logic.
+    assert profile["personal"]["name"] not in (None, "", "John Doe")
     
     answers = load_answers()
     assert isinstance(answers, list)
