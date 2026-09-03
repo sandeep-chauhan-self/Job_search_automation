@@ -252,3 +252,12 @@ def run_prepare_job(reporter, job_ids: list[str]) -> None:
         asyncio.run(orchestrator.run_prepare(job_ids))
     finally:
         orchestrator.close()
+
+
+def run_auto_apply_job(reporter, job_ids: list[str]) -> None:
+    orchestrator = Orchestrator(reporter)
+    try:
+        asyncio.run(orchestrator.run_prepare(job_ids))
+        asyncio.run(orchestrator.run_apply(job_ids))
+    finally:
+        orchestrator.close()

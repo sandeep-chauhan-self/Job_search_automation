@@ -360,6 +360,18 @@ async def start_apply(job_ids: list[str] = Body(..., embed=True)):
     return {"started": True, "count": len(job_ids)}
 
 
+@router.post("/runs/auto_apply")
+async def start_auto_apply(job_ids: list[str] = Body(..., embed=True)):
+    from src.orchestrator import run_auto_apply_job
+
+    if not job_ids:
+        raise HTTPException(status_code=422, detail="job_ids must not be empty")
+    ok, message = run_manager.start("auto_apply", run_auto_apply_job, job_ids)
+    if not ok:
+        raise HTTPException(status_code=409, detail=message)
+    return {"started": True, "count": len(job_ids)}
+
+
 @router.post("/runs/cancel")
 async def cancel_run():
     if not run_manager.request_cancel():

@@ -680,6 +680,17 @@ async function openDrawer(jobId) {
         dl.href = '/api/jobs/' + encodeURIComponent(job.id) + '/document/cover_letter';
         actions.append(dl);
     }
+    
+    const autoApply = el('button', 'btn btn-primary btn-sm', 'Auto Apply (1-Click)');
+    autoApply.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+    autoApply.style.color = 'white';
+    autoApply.style.border = 'none';
+    autoApply.addEventListener('click', () => {
+        closeDrawer();
+        startRun('/runs/auto_apply', { job_ids: [job.id] }, 'Auto Apply');
+    });
+    actions.append(autoApply);
+
     body.append(actions);
 
     // -- status control
@@ -1084,6 +1095,7 @@ function applyRunState(snapshot) {
     $('btn-discover').disabled = snapshot.active;
     $('btn-prepare').disabled = snapshot.active;
     $('btn-apply').disabled = snapshot.active;
+    if ($('btn-auto-apply')) $('btn-auto-apply').disabled = snapshot.active;
 }
 
 function appendLog(entry) {
@@ -1283,6 +1295,14 @@ function init() {
             : 'Dry run: the browser will fill each form and screenshot it without submitting. Continue with ' + ids.length + ' job(s)?';
         if (!window.confirm(warning)) return;
         startRun('/runs/apply', { job_ids: ids }, 'Apply');
+    });
+
+    $('btn-auto-apply')?.addEventListener('click', () => {
+        const ids = [...state.selected];
+        if (!ids.length) return;
+        const warning = 'This will generate resumes and automatically submit applications for ' + ids.length + ' job(s). Continue?';
+        if (!window.confirm(warning)) return;
+        startRun('/runs/auto_apply', { job_ids: ids }, 'Auto Apply');
     });
 
     $('btn-cancel').addEventListener('click', async () => {
