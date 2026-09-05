@@ -3,24 +3,22 @@ llm:
   # LiteLLM model string. The provider prefix determines which API this hits and
   # which key format is expected - a bare model name like "gpt-4o-mini" always
   # routes to OpenAI's own endpoint regardless of what key you provide.
-  #   OpenAI directly:  "gpt-4o-mini"
   #   OpenRouter:       "openrouter/<vendor>/<model>", e.g. "openrouter/openai/gpt-4o-mini"
   #                     (browse available models/slugs at https://openrouter.ai/models)
-  #   Local Ollama:     "ollama/llama3.1"
   # secrets.yaml's llm_api_key must match whichever provider this points to.
   provider: "openrouter/openai/gpt-4o-mini"
   temperature: 0.3
   max_tokens: 2000
-  fallback_provider: "ollama/llama3.1"  # Used if primary fails
+  fallback_provider: "ollama/llama3.1" # Used if primary fails
 
 application:
-  daily_limit: 25                     # Max auto-applies per rolling 24h
-  min_match_score: 60                 # Jobs below this are SKIPPED
-  delay_min_seconds: 3                # Min delay between actions
-  delay_max_seconds: 8                # Max delay between actions
-  generate_cover_letter: true         # Master toggle
-  dry_run: true                       # true = fill forms + screenshot, never submit
-  headless: false                     # Keep false so you can watch and intervene
+  daily_limit: 25 # Max auto-applies per rolling 24h
+  min_match_score: 60 # Jobs below this are SKIPPED
+  delay_min_seconds: 3 # Min delay between actions
+  delay_max_seconds: 8 # Max delay between actions
+  generate_cover_letter: true # Master toggle
+  dry_run: false # true = fill forms + screenshot, never submit
+  headless: false # Keep false so you can watch and intervene
   browser_viewport:
     width: 1920
     height: 1080
@@ -33,4 +31,4 @@ platforms:
   google_jobs: true
 
 ghosting:
-  days_until_ghosted: 14              # Auto-mark as ghosted after N days
+  days_until_ghosted: 14 # Auto-mark as ghosted after N days

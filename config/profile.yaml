@@ -6,71 +6,98 @@ personal:
   linkedin_url: https://linkedin.com/in/sandeep-chauhan-243012181
   github_url: https://github.com/sandeep-chauhan-self
   portfolio_url: ""
+headline: Python Developer | Safety-Critical Production Systems | Security Advocate
 summary:
-  "Python Developer with 3+ years building production-grade software in safety-critical
-  environments. Experienced in Python, Django, Flask, REST APIs, PostgreSQL, and CI/CD
-  workflows. Delivered 8 production releases at Honeywell and resolved 100+ critical
-  defects. Certified Cyber Security Advocate. Hands-on with LLM integration, agentic
-  AI workflows, n8n, and prompt engineering to automate business processes.
-
-  "
+  "Execution-driven Python Developer with 3+ years delivering reliable, maintainable
+  production software in industrial and regulated environments. Core contributor at
+  Honeywell, building safety-critical applications across backend logic, APIs, and
+  performance-sensitive codebases. Proven record of shipping production releases,
+  resolving high-severity defects, and contributing to NPI. Certified Cyber Security
+  Advocate with a security-first development mindset, hands-on with LLM integration
+  and agentic AI workflows."
+impact_snapshot:
+  - 8 production releases shipped, including one full release built from the ground up.
+  - Resolved 100+ high-impact production issues, including performance and safety/security
+    defects.
+  - Trusted to interview and evaluate 2-3 YOE engineers for production teams.
 experience:
   - title: Software Developer
     company: Honeywell
     location: Bengaluru, India
     start_date: 2024-04
     end_date: present
+    dates: 04/2024 - Present
     bullets:
-      - Core contributor to a production-grade, safety-critical industrial application
-        — delivered 8+ releases maintaining full backward compatibility and zero regression.
-      - Resolved 100+ high-impact defects across performance, safety, and security domains
-        — reduced critical open defect count by 60% and improved release quality by 40%.
-      - Owned security responsibilities as Certified Security Advocate, applying secure
-        coding practices aligned with EUCRA policies and driving inclusion of security
-        fixes in release scope.
+      - Core contributor to a production-grade, safety-critical industrial application,
+        owning features end-to-end from design to release.
+      - Delivered 8+ production releases, including one built from scratch, maintaining
+        stability and backward compatibility with zero regression.
+      - Actively influenced release scope by driving inclusion of security fixes, clearly
+        articulating impact, risk exposure, and long-term value to stakeholders.
+      - Owned security responsibilities as Security Advocate for the product, applying
+        secure coding practices and aligning development with internal security and EUCRA
+        policies.
+      - Resolved 100+ high-impact production issues, spanning performance bottlenecks and
+        safety/security defects, reducing critical open defect count by 60%.
+      - Worked across multiple codebases and technology stacks, switching contexts and
+        debugging efficiently across technologies.
       - Applied LLM tools and agentic AI workflows to cut code review and documentation
         time by 30%.
-      - Contributed to NPI — supported early-stage design decisions and system hardening
-        in regulated, SIL-aligned environments.
-  - title: Software Developer
+      - Contributed to New Product Introduction (NPI), supporting early-stage design
+        decisions and system hardening in regulated, SIL-aligned environments.
+  - title: Software Developer - SD
     company: Velocity Pvt. Ltd.
     location: Bengaluru, India
     start_date: 2022-06
     end_date: 2023-06
+    dates: 06/2022 - 06/2023
     bullets:
       - Developed and stabilized backend Python application logic for customer-facing
         production systems.
-      - Closed ~600 production issues — improved system reliability by 35% and reduced
+      - Closed ~600 production issues, improving system reliability by 35% and reducing
         recurring defects.
-      - Implemented multi-currency support and SQL query optimization for core data workflows;
-        collaborated directly with clients to reduce delivery turnaround by 25%.
+      - Implemented multi-currency support, handling internationalization and edge cases,
+        alongside SQL query optimization for core data workflows.
+      - Collaborated directly with clients to clarify requirements and accelerate delivery,
+        reducing turnaround by 25%.
 projects:
   - name: Stock Analysis & Trading Signal Platform
-    description:
-      Built full-stack platform with Flask backend and React frontend for
-      asynchronous, technical-indicator-driven signal generation. Designed modular backend
-      and end-to-end data pipeline.
+    tech_stack: Python, Flask, React, PostgreSQL
+    bullets:
+      - Built a full-stack stock analysis platform with React frontend and Flask backend,
+        supporting asynchronous analysis jobs and technical-indicator-driven signal
+        generation.
+      - Designed a modular backend architecture (Blueprints, background workers,
+        PostgreSQL) to handle long-running analysis and result persistence.
+      - Implemented an end-to-end data lifecycle (frontend to backend to database to
+        frontend) with job tracking, polling, and result visualization.
   - name: AI-Powered Business Automation Suite
-    description:
-      Built multi-step agentic AI workflows in n8n. Integrated Claude API
-      and MCP to build tool-augmented AI agents. Applied chain-of-thought and few-shot
-      prompt engineering; used RAG.
+    tech_stack: Python, n8n, Claude API, MCP, RAG
+    bullets:
+      - Built multi-step agentic AI workflows in n8n to automate multi-stage business
+        processes.
+      - Integrated the Claude API and MCP to build tool-augmented AI agents with explicit
+        state and orchestration.
+      - Applied chain-of-thought and few-shot prompt engineering with RAG over internal
+        document sets.
 skills:
-  languages:
+  "Languages & Platforms":
     - Python
+    - SQL
     - JavaScript
     - HTML
     - CSS
-    - SQL
-  frameworks:
+    - Backend Application Development
+    - Windows-based Systems
+  "Frameworks & Libraries":
     - Django
+    - Django REST Framework
     - Flask
     - FastAPI
-    - Django REST Framework
     - React
     - Pandas
     - NumPy
-  tools:
+  "Tools & Data":
     - PostgreSQL
     - MySQL
     - Git
@@ -80,12 +107,24 @@ skills:
     - n8n
     - Prompt Engineering
     - RAG
+  "Engineering Strengths":
+    - Production-grade Software Development
+    - Performance Optimization
+    - Debugging & Root Cause Analysis
+    - Secure Coding
+    - Release Engineering & Regression Stability
+  "Core Concepts":
+    - Object-Oriented Design (OOP)
+    - Composition over Inheritance
+    - REST API Design
+    - Deterministic Execution
+    - Reliability-Focused Development
 education:
-  - degree: B.Tech — Computer Science Engineering
+  - degree: B.Tech - Computer Science Engineering
     institution: Dr. A.P.J. Abdul Kalam Technical University (AKTU)
     year: 2022
 certifications:
-  - Cyber Security Advocate — Honeywell
+  - Cyber Security Advocate - Honeywell
   - SIL Level 1 Certified
 preferences:
   target_roles:

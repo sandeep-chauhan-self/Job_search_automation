@@ -18,12 +18,14 @@
 # which is instructed to answer 0/No rather than invent experience.
 
 - pattern: "years of experience"
-  answer: "6"                 # <- your TOTAL years of professional experience
+  answer: "3"                 # profile.yaml states "3+ years" - using the certain
+                                # floor, not a rounded-up guess
   type: "number"
   generic: true
 
 - pattern: "authorized to work"
-  answer: "Yes"
+  answer: "Yes"                # assumes Indian work authorization - every
+                                # target location in profile.yaml is India-based
   type: "radio"
 
 - pattern: "require sponsorship"
@@ -34,18 +36,75 @@
   answer: "No"
   type: "radio"
 
+- pattern: "willing to relocate"
+  answer: "Yes"                # career_preferences.location_preference lists
+                                # Pune, Gurugram, and Noida beyond Bengaluru
+  type: "radio"
+
 - pattern: "expected salary"
-  answer: "2500000"           # <- your expected annual salary
+  answer: "1500000"            # 15 lakh, as given
   type: "number"
 
 - pattern: "current salary"
-  answer: "2000000"           # <- your current annual salary
+  answer: "1100000"            # 11 lakh, as given
   type: "number"
 
 - pattern: "notice period"
-  answer: "30 days"
+  answer: "2 months"
+  type: "text"
+  exclude_if_contains: ["negotiable"]   # "is your notice period negotiable?" is a
+                                          # yes/no question - "2 months" would be typed
+                                          # into a radio field and rejected or wrong.
+                                          # Falls through to manual/LLM instead.
+
+- pattern: "current location"
+  answer: "Bengaluru, India"
   type: "text"
 
-- pattern: "willing to relocate"
+- pattern: "current employer"
+  answer: "Honeywell"
+  type: "text"
+
+- pattern: "current company"
+  answer: "Honeywell"
+  type: "text"
+
+- pattern: "linkedin"
+  answer: "https://linkedin.com/in/sandeep-chauhan-243012181"
+  type: "text"
+
+- pattern: "github"
+  answer: "https://github.com/sandeep-chauhan-self"
+  type: "text"
+
+- pattern: "highest qualification"
+  answer: "Bachelor's Degree - B.Tech, Computer Science Engineering"
+  type: "text"
+
+- pattern: "highest degree"
+  answer: "Bachelor's Degree - B.Tech, Computer Science Engineering"
+  type: "text"
+
+- pattern: "immediate joiner"
+  answer: "No"                 # matches your 2-month notice period
+  type: "radio"
+
+- pattern: "willing to travel"
   answer: "Yes"
   type: "radio"
+
+- pattern: "reason for leaving"
+  answer: "Looking for a role with greater ownership over backend and agentic AI/LLM engineering work, building on the production and safety-critical experience I've gained at Honeywell."
+  type: "text"                 # FIRST DRAFT - this is the one entry here that's
+                                 # your voice, not a fact. Edit it before relying on it.
+
+- pattern: "reason for job change"
+  answer: "Looking for a role with greater ownership over backend and agentic AI/LLM engineering work, building on the production and safety-critical experience I've gained at Honeywell."
+  type: "text"
+
+# NOT ADDED - deliberately left out, not an oversight:
+#
+# - Any EEO/voluntary self-identification question (gender, race, disability,
+#   veteran status) - these are legally voluntary disclosures. Auto-submitting
+#   an answer on your behalf isn't something this file should do regardless of
+#   what value would go there; leave these to manual review per application.

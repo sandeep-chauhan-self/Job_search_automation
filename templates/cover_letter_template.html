@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <title>{{ name }} - Cover Letter</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: "Times New Roman", Times, Georgia, serif;
             color: #1a1a1a;
             line-height: 1.6;
             padding: 2.5cm;
@@ -16,6 +15,7 @@
         .header h1 { font-size: 20pt; margin: 0 0 10px 0; }
         .contact { color: #555; font-size: 10pt; }
         .date-company { margin-bottom: 30px; }
+        .content { white-space: pre-line; }
         .content p { margin-bottom: 15px; }
         .signoff { margin-top: 40px; }
     </style>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="content">
-        {{ body | replace('\n', '<br>') | safe }}
+        {{ body }}
     </div>
 
     <div class="signoff">

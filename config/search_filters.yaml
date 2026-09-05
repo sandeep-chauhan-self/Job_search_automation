@@ -1,5 +1,9 @@
 # What to search for. Every search below runs against every enabled platform
-# in config.yaml, so 2 searches x 5 platforms = 10 scrapes per discovery run.
+# in config.yaml, so 5 searches x 5 platforms = 25 scrapes per discovery run
+# (up from 10 in the old version - see notes below on dialing this back).
+#
+# Titles come from profile.yaml -> preferences.target_roles.
+# Locations come from profile.yaml -> career_preferences.location_preference.
 
 defaults:
   country: "India"          # Indeed/Glassdoor need a country. Change if not India.
@@ -7,18 +11,37 @@ defaults:
   hours_old: 168            # Fallback when a search has no date_posted
 
 searches:
-  - title: "Senior Software Engineer"
+  - title: "Backend Developer"
     location: "Bangalore"
-    work_mode: "remote"     # "remote" restricts to remote listings; omit for any
-    date_posted: "week"     # today | 3days | week | month
+    date_posted: "week"      # work_mode omitted on purpose - profile accepts
+                              # remote, hybrid, AND in-person; a city search
+                              # with no work_mode filter catches all three
 
-  - title: "Staff Engineer"
+  - title: "Python Developer"
+    location: "Bangalore"
+    date_posted: "week"
+
+  - title: "Software Engineer"
+    location: "Bangalore"
+    date_posted: "week"      # "Software Developer" deliberately not a
+                              # separate entry - same search space in India,
+                              # discovery already dedupes results
+
+  - title: "Senior Software Engineer"
+    location: "India"
+    work_mode: "remote"       # remote-first search, matches the profile's
+                              # stated location_preference of "Remote"
+    date_posted: "week"
+
+  - title: "AI Engineer"
     location: "India"
     work_mode: "remote"
     date_posted: "week"
 
 # Drop a job if its title or description contains any of these.
-exclude_keywords: ["intern", "junior", "fresher", "unpaid"]
+# staff/principal/architect/director added because the profile's ~3+ years
+# doesn't clear the bar those titles usually require in this market.
+exclude_keywords: ["intern", "junior", "fresher", "unpaid", "staff engineer", "principal", "architect", "director"]
 
 # Keep a job only if its title or description contains at least one of these.
 # Leave empty to keep everything that survived exclude_keywords.
