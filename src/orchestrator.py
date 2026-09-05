@@ -134,6 +134,10 @@ class Orchestrator:
                 self.reporter.log("Resume factory: cancelled before finishing.", "warn")
                 break
 
+            if job.resume_path:
+                self.reporter.log(f"Documents already exist for {job.company}, skipping.")
+                continue
+
             self.reporter.set_progress(index, total)
             try:
                 job_dict = {
@@ -257,7 +261,6 @@ def run_prepare_job(reporter, job_ids: list[str]) -> None:
 def run_auto_apply_job(reporter, job_ids: list[str]) -> None:
     orchestrator = Orchestrator(reporter)
     try:
-        asyncio.run(orchestrator.run_prepare(job_ids))
         asyncio.run(orchestrator.run_apply(job_ids))
     finally:
         orchestrator.close()
